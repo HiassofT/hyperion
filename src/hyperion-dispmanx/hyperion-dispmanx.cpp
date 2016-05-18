@@ -54,6 +54,12 @@ int main(int argc, char ** argv)
 		SwitchParameter<>      & arg3DSBS           = parameters.add<SwitchParameter<>>     (0x0, "3DSBS",            "Interpret the incoming video stream as 3D side-by-side");
 		SwitchParameter<>      & arg3DTAB           = parameters.add<SwitchParameter<>>     (0x0, "3DTAB",            "Interpret the incoming video stream as 3D top-and-bottom");
 
+		SwitchParameter<>      & argSnapshotNoYUV   = parameters.add<SwitchParameter<>>     (0x0, "snapshot-no-YUV",  "Take snapshot with DISPMANX_SNAPSHOT_NO_YUV flag set");
+		SwitchParameter<>      & argSnapshotNoRGB   = parameters.add<SwitchParameter<>>     (0x0, "snapshot-no-RGB",  "Take snapshot with DISPMANX_SNAPSHOT_NO_RGB flag set");
+		SwitchParameter<>      & argSnapshotFill    = parameters.add<SwitchParameter<>>     (0x0, "snapshot-fill",    "Take snapshot with DISPMANX_SNAPSHOT_FILL flag set");
+		SwitchParameter<>      & argSnapshotSwapRB  = parameters.add<SwitchParameter<>>     (0x0, "snapshot-swap-RB", "Take snapshot with DISPMANX_SNAPSHOT_SWAP_RED_BLUE flag set");
+		SwitchParameter<>      & argSnapshotPack    = parameters.add<SwitchParameter<>>     (0x0, "snapshot-pack",    "Take snapshot with DISPMANX_SNAPSHOT_PACK flag set");
+
 		// set defaults
 		argFps.setDefault(10);
 		argWidth.setDefault(64);
@@ -80,6 +86,33 @@ int main(int argc, char ** argv)
 			videoMode = VIDEO_3DTAB;
 		}
 
+		int vcFlags = 0;
+
+		if (argSnapshotNoYUV.isSet())
+		{
+			vcFlags |= DISPMANX_SNAPSHOT_NO_YUV;
+		}
+
+		if (argSnapshotNoRGB.isSet())
+		{
+			vcFlags |= DISPMANX_SNAPSHOT_NO_RGB;
+		}
+
+		if (argSnapshotFill.isSet())
+		{
+			vcFlags |= DISPMANX_SNAPSHOT_FILL;
+		}
+
+		if (argSnapshotSwapRB.isSet())
+		{
+			vcFlags |= DISPMANX_SNAPSHOT_SWAP_RED_BLUE;
+		}
+
+		if (argSnapshotPack.isSet())
+		{
+			vcFlags |= DISPMANX_SNAPSHOT_PACK;
+		}
+
 		// check if we need to display the usage. exit if we do.
 		if (argHelp.isSet())
 		{
@@ -90,7 +123,7 @@ int main(int argc, char ** argv)
 		// Create the dispmanx grabbing stuff
 		int grabInterval = 1000 / argFps.getValue();
 		DispmanxWrapper dispmanxWrapper(argWidth.getValue(),argHeight.getValue(),
-			videoMode,
+			videoMode, vcFlags,
 			std::max(0, argCropLeft.getValue()),
 			std::max(0, argCropRight.getValue()),
 			std::max(0, argCropTop.getValue()),

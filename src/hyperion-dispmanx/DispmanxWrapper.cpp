@@ -4,6 +4,7 @@
 
 DispmanxWrapper::DispmanxWrapper(const unsigned grabWidth, const unsigned grabHeight,
 	const VideoMode& videoMode,
+	const int vcFlags,
 	const unsigned cropLeft, const unsigned cropRight,
 	const unsigned cropTop, const unsigned cropBottom,
 	const unsigned updateRate_Hz) :
@@ -11,6 +12,7 @@ DispmanxWrapper::DispmanxWrapper(const unsigned grabWidth, const unsigned grabHe
     _grabber(grabWidth, grabHeight)
 {
     _grabber.setVideoMode(videoMode);
+    _grabber.setFlags(vcFlags);
     _grabber.setCropping(cropLeft, cropRight, cropTop, cropBottom);
     _timer.setSingleShot(false);
     _timer.setInterval(updateRate_Hz);
